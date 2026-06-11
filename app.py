@@ -14,7 +14,12 @@ BASE = "https://financialmodelingprep.com/api/v3"
 
 def get_profile(ticker):
     url = f"{BASE}/profile/{ticker}?apikey={API_KEY}"
-    return requests.get(url).json()[0]
+    res = requests.get(url)
+
+    data = res.json()
+    if isinstance(data, list) and len(data) > 0:
+        return data[0]
+    return {}
 
 def get_metrics(ticker):
     url = f"{BASE}/key-metrics-ttm/{ticker}?apikey={API_KEY}"
@@ -50,12 +55,24 @@ for t in TICKERS:
             "EV/EBITDA": ev/ebitda if ebitda else None
         })
 
-    except:
-        pass
+    except Exception as e:
+    st.warning(f"Error for {t}: {e}")
 
 df = pd.DataFrame(rows)
+if df.empty:
+    st.error("No data loaded from API. Check API key or limits.")
+    st.stop()
 
-sector = st.selectbox("Filter Sector", ["All"] + list(df["Sector"].dropna().unique()))
+if "Sector" not in df.columns:
+    st.error("Sector data missing from API response.")
+    st.stop()
+
+sector_list = ["All"]
+
+if "Sector" in df.columns:
+    sector_list += list(df["Sector"].dropna().unique())
+
+sector = st.selectbox("Filter Sector", sector_list)
 
 if sector != "All":
     df = df[df["Sector"] == sector]
