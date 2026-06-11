@@ -33,8 +33,11 @@ for t in TICKERS:
         p = get_profile(t)
         m = get_metrics(t)
         if t == "AAPL":
-            st.write("Profile Keys:", list(p.keys()))
-            st.write("Metrics Keys:", list(m.keys()))
+            st.write(
+                requests.get(
+                    f"{BASE}/profile/AAPL?apikey={API_KEY}"
+                ).json()
+            )
     
         price = p.get("price", 0)
         eps = p.get("eps", 0)
