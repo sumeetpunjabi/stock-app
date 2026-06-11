@@ -56,7 +56,7 @@ for t in TICKERS:
         })
 
     except Exception as e:
-    st.warning(f"Error for {t}: {e}")
+        st.warning(f"Error for {t}: {e}")
 
 df = pd.DataFrame(rows)
 if df.empty:
