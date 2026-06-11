@@ -33,7 +33,8 @@ for t in TICKERS:
         p = get_profile(t)
         m = get_metrics(t)
         if t == "AAPL":
-            st.write("Metric Keys:", list(m.keys()))
+        st.write("Profile Keys:", list(p.keys()))
+        st.write("Metrics Keys:", list(m.keys()))
     
         price = p.get("price", 0)
         eps = p.get("eps", 0)
